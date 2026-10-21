@@ -28,7 +28,9 @@ Run `npm run build`. The static site output is written to `dist/`.
 ## Demo features
 
 - Responsive parent dashboard, appointment list, and mobile bottom navigation
-- IPS Oman school crest, refreshed visual theme, and English/Arabic toggle
+- IPS Oman school crest, refined navy/teal/gold theme, and English/Arabic toggle
+- Numbered appointment directory in the requested order: School Administrator, HR, Principal, Teachers, Admissions, Wellbeing, Finance, and Reception
+- Teacher meetings are locked until School Administrator access is granted in the demo settings
 - Book staff appointments: teacher, principal, admissions, counseling, finance
 - Choose child, date, available sample session, meeting format, reason, and notes
 - Prevent duplicate staff/time bookings using pending and confirmed appointments saved in this browser
@@ -39,6 +41,6 @@ Run `npm run build`. The static site output is written to `dist/`.
 
 ## Important limitations
 
-This is a **frontend prototype only**. Appointments and roles are stored locally in each visitor's browser and are not real school data. Visitors do not share appointments with each other across devices. The availability check only compares appointments saved in the current browser; dates and slots are illustrative and are not checked against the school's real schedule. No real identity verification, authorization, server-side conflict prevention, notification delivery, visitor verification, or online meeting link generation is implemented. Before production, connect to a secure Laravel/PHP API, enforce server-side authorization and guardian-child relationships, validate real availability and conflicts, and add audit logs, holidays, notifications, and accessible translated content. Do not enter real student personal information into this prototype.
+This is a **frontend prototype only**. Appointments, demo roles, and the teacher-access setting are stored locally in each visitor's browser and are not real school data. Visitors do not share appointments or administrator permissions with each other across devices. The numbered staff list and teacher-access switch demonstrate the requested flow; they are not secure authorization because users can switch demo roles in the browser. The availability check only compares appointments saved in the current browser; dates and slots are illustrative and are not checked against the school's real schedule. No real identity verification, authorization, server-side conflict prevention, notification delivery, visitor verification, or online meeting link generation is implemented. Before production, connect to a secure Laravel/PHP API, enforce server-side authorization and guardian-child relationships, validate real availability and conflicts, and add audit logs, holidays, notifications, and accessible translated content. Do not enter real student personal information into this prototype.
 
 The initial sample appointments use October 2026 dates; adjust them for later demonstrations.

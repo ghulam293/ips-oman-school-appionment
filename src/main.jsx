@@ -5,6 +5,8 @@ import {
   ArrowLeft,
   ArrowRight,
   Bell,
+  BriefcaseBusiness,
+  Building2,
   CalendarCheck,
   CalendarDays,
   Check,
@@ -14,7 +16,9 @@ import {
   Clock3,
   GraduationCap,
   House,
+  KeyRound,
   Languages,
+  LockKeyhole,
   MapPin,
   Plus,
   RotateCcw,
@@ -29,12 +33,25 @@ import './app.css';
 const STORAGE_KEY = 'ips-demo-appointments';
 const TIME_SLOTS = ['09:00', '09:30', '10:30', '11:00', '13:30', '14:00'];
 const STAFF = [
+  { id: 'admin1', name: 'IPS Oman Admin Office', role: 'School Administrator', dept: 'School administration', initials: 'AD', color: 'sky' },
+  { id: 'hr1', name: 'Ms. Fatima Al-Raisi', role: 'HR Officer', dept: 'Human Resources', initials: 'HR', color: 'peach' },
+  { id: 'p1', name: 'Dr. Nadia Hassan', role: 'Principal', dept: 'School Leadership', initials: 'NH', color: 'rose' },
   { id: 't1', name: 'Ms. Sarah Ahmed', role: 'Teacher', dept: 'Grade 5 · Mathematics', initials: 'SA', color: 'lavender' },
   { id: 't2', name: 'Mr. Omar Khalid', role: 'Teacher', dept: 'Grade 6 · English', initials: 'OK', color: 'peach' },
-  { id: 'p1', name: 'Dr. Nadia Hassan', role: 'Principal', dept: 'School Leadership', initials: 'NH', color: 'rose' },
-  { id: 'a1', name: 'Ms. Aisha Noor', role: 'Admissions', dept: 'Admissions Office', initials: 'AN', color: 'mint' },
+  { id: 'a1', name: 'Ms. Aisha Noor', role: 'Admission Officer', dept: 'Admissions Office', initials: 'AN', color: 'mint' },
   { id: 'c1', name: 'Mr. Yusuf Ali', role: 'Counselor', dept: 'Student Wellbeing', initials: 'YA', color: 'lilac' },
-  { id: 'f1', name: 'Ms. Lina Faris', role: 'Finance', dept: 'Accounts Office', initials: 'LF', color: 'sky' },
+  { id: 'f1', name: 'Ms. Lina Faris', role: 'Finance Officer', dept: 'Accounts Office', initials: 'LF', color: 'sky' },
+  { id: 'r1', name: 'Reception Desk', role: 'Receptionist', dept: 'Visitor coordination', initials: 'RC', color: 'mint' },
+];
+const STAFF_GROUPS = [
+  { number: '01', title: 'School Administrator', roles: ['School Administrator'], icon: Building2 },
+  { number: '02', title: 'Human Resources', roles: ['HR Officer'], icon: BriefcaseBusiness },
+  { number: '03', title: 'School Leadership', roles: ['Principal'], icon: GraduationCap },
+  { number: '04', title: 'Teaching Staff', roles: ['Teacher'], icon: Users },
+  { number: '05', title: 'Admissions', roles: ['Admission Officer'], icon: CalendarCheck },
+  { number: '06', title: 'Student Wellbeing', roles: ['Counselor'], icon: ShieldCheck },
+  { number: '07', title: 'Finance', roles: ['Finance Officer'], icon: CalendarDays },
+  { number: '08', title: 'Reception', roles: ['Receptionist'], icon: House },
 ];
 const SAMPLE_APPOINTMENTS = [
   { id: 'IPS-1042', staffId: 't1', child: 'Adam', date: '2026-10-23', time: '09:30', format: 'In person', topic: 'Academic progress', status: 'Confirmed', notes: 'Discuss term progress.' },
@@ -46,7 +63,7 @@ const NAV_ITEMS = [
   { id: 'appointments', label: 'Appointments', icon: CalendarDays },
   { id: 'profile', label: 'My profile', icon: Users },
 ];
-const ROLES = ['Parent', 'Teacher', 'Principal', 'School Administrator', 'Receptionist', 'Admission Officer', 'Counselor', 'Finance Officer'];
+const ROLES = ['Parent', 'School Administrator', 'HR Officer', 'Principal', 'Teacher', 'Admission Officer', 'Receptionist', 'Counselor', 'Finance Officer', 'Student'];
 const FILTERS = ['All', 'Pending', 'Confirmed', 'Completed', 'Cancelled', 'Declined'];
 
 function localDate(date = new Date()) {
@@ -89,6 +106,9 @@ function App() {
   const [tab, setTab] = useState('home');
   const [language, setLanguage] = useState('en');
   const [role, setRole] = useState('Parent');
+  const [teacherAccess, setTeacherAccess] = useState(
+    () => localStorage.getItem('ips-demo-teacher-access') === 'true',
+  );
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
@@ -126,6 +146,14 @@ function App() {
       console.error('Could not save demo appointments in this browser.', error);
     }
   }, [appointments]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('ips-demo-teacher-access', String(teacherAccess));
+    } catch (error) {
+      console.error('Could not save demo teacher-access settings in this browser.', error);
+    }
+  }, [teacherAccess]);
 
   useEffect(() => {
     if (!notice) return undefined;
@@ -216,6 +244,7 @@ function App() {
       };
 
   const getStaff = (appointment) => STAFF.find((member) => member.id === appointment?.staffId) || STAFF[0];
+  const canBookTeacher = role === 'School Administrator' || teacherAccess;
   const activeAppointments = useMemo(
     () => appointments.filter((item) => ['Pending', 'Confirmed'].includes(item.status)),
     [appointments],
@@ -508,7 +537,26 @@ function App() {
                 <div className="panel-heading"><div><span className="eyebrow">PREFERENCES</span><h2>{t.settings}</h2></div></div>
                 <label className="setting-row"><span className="setting-icon"><Languages size={19} /></span><span className="setting-copy"><strong>{t.language}</strong><small>Choose your preferred display language</small></span><select value={language} onChange={(event) => setLanguage(event.target.value)}><option value="en">English</option><option value="ar">العربية</option></select></label>
                 <label className="setting-row"><span className="setting-icon"><ShieldCheck size={19} /></span><span className="setting-copy"><strong>{t.role}</strong><small>Preview role-specific appointment actions</small></span><select value={role} onChange={(event) => setRole(event.target.value)}>{ROLES.map((item) => <option key={item}>{item}</option>)}</select></label>
-                <div className="profile-hint"><ShieldCheck size={19} /><span><strong>This is a demo profile</strong><small>Role switching only previews the interface. Real sign-in and access control require a secure school service.</small></span></div>
+                {role === 'School Administrator' ? (
+                  <div className="permission-control">
+                    <span className="permission-icon"><KeyRound size={19} /></span>
+                    <span className="setting-copy"><strong>Teacher meeting access</strong><small>Allow parents to request meetings with teachers in this demo.</small></span>
+                    <button
+                      aria-checked={teacherAccess}
+                      aria-label="Grant parent access to teacher meetings"
+                      className={teacherAccess ? 'permission-toggle enabled' : 'permission-toggle'}
+                      onClick={() => setTeacherAccess((current) => !current)}
+                      role="switch"
+                      type="button"
+                    ><span /></button>
+                  </div>
+                ) : (
+                  <div className="permission-notice">
+                    <LockKeyhole size={18} />
+                    <span><strong>Teacher meetings require administrator permission</strong><small>{teacherAccess ? 'The administrator has enabled teacher meetings for this demo.' : 'Teachers stay locked until a School Administrator grants access.'}</small></span>
+                  </div>
+                )}
+                <div className="profile-hint"><ShieldCheck size={19} /><span><strong>Demo role preview — not secure sign-in</strong><small>Switching roles or granting access only simulates the workflow on this device. Real accounts and permissions must be enforced by the school server.</small></span></div>
                 <button className="outline-button reset-button" onClick={() => { setAppointments(SAMPLE_APPOINTMENTS); toast('Sample appointments restored.'); }} type="button"><RotateCcw size={17} /> Reset demo appointments</button>
               </section>
             </div>
@@ -534,7 +582,7 @@ function App() {
               <div><GraduationCap size={18} /><span><small>{t.student}</small><strong>{selected.child}</strong></span></div>
             </div>
             <div className="detail-topic"><small>{t.reason}</small><strong>{selected.topic}</strong>{selected.notes && <p>{selected.notes}</p>}</div>
-            {selected.status === 'Pending' && ['Teacher', 'Principal', 'School Administrator', 'Admission Officer', 'Counselor', 'Finance Officer'].includes(role) && <div className="dialog-actions"><button className="primary-button" onClick={() => updateAppointment(selected.id, { status: 'Confirmed' })} type="button"><Check size={17} /> Approve request</button><button className="outline-button" onClick={() => updateAppointment(selected.id, { status: 'Declined' })} type="button">Decline</button></div>}
+            {selected.status === 'Pending' && (role === 'School Administrator' || getStaff(selected).role === role) && <div className="dialog-actions"><button className="primary-button" onClick={() => updateAppointment(selected.id, { status: 'Confirmed' })} type="button"><Check size={17} /> Approve request</button><button className="outline-button" onClick={() => updateAppointment(selected.id, { status: 'Declined' })} type="button">Decline</button></div>}
             {selected.status === 'Confirmed' && role === 'Receptionist' && <button className="primary-button full-button" onClick={() => updateAppointment(selected.id, { status: 'Completed' })} type="button"><CheckCircle2 size={17} /> Check in</button>}
             {['Pending', 'Confirmed'].includes(selected.status) && <div className="dialog-actions"><button className="outline-button" onClick={() => startBooking(selected)} type="button"><RotateCcw size={16} /> Reschedule</button><button className="danger-button" onClick={() => { if (window.confirm('Cancel this appointment?')) updateAppointment(selected.id, { status: 'Cancelled' }); }} type="button">Cancel appointment</button></div>}
           </section>
@@ -556,7 +604,7 @@ function App() {
                 <div className="step-track"><span style={{ width: `${(step / 3) * 100}%` }} /></div>
                 <div className="step-labels"><span className={step >= 1 ? 'current' : ''}>1. Staff</span><span className={step >= 2 ? 'current' : ''}>2. Session</span><span className={step >= 3 ? 'current' : ''}>3. Review</span></div>
                 <div className="booking-content">
-                  {step === 1 && <div className="booking-step"><span className="eyebrow">CHOOSE YOUR CONTACT</span><h3>{t.selectStaff}</h3><p>Select the person you’d like to speak with.</p><div className="staff-grid">{STAFF.map((member) => <button className={form.staffId === member.id ? 'staff-choice selected' : 'staff-choice'} key={member.id} onClick={() => chooseStaff(member.id)} type="button"><span className={`person-avatar ${member.color}`}>{member.initials}</span><span><strong>{member.name}</strong><small>{member.dept}</small></span><span className="staff-check">{form.staffId === member.id ? <CheckCircle2 size={20} /> : <ChevronRight size={18} />}</span></button>)}</div></div>}
+                  {step === 1 && <div className="booking-step"><span className="eyebrow">CHOOSE YOUR CONTACT · IN ORDER</span><h3>{t.selectStaff}</h3><p>Browse school contacts in sequence. Teacher meetings require School Administrator permission.</p><div className="staff-groups">{STAFF_GROUPS.map((group) => { const Icon = group.icon; const members = STAFF.filter((member) => group.roles.includes(member.role)); return <section className="staff-group" key={group.number}><div className="staff-group-heading"><span className="staff-group-number">{group.number}</span><span className="staff-group-icon"><Icon size={16} /></span><strong>{group.title}</strong>{group.roles.includes('Teacher') && !canBookTeacher && <span className="group-lock"><LockKeyhole size={13} /> Admin access</span>}</div><div className="staff-grid">{members.map((member) => { const locked = member.role === 'Teacher' && !canBookTeacher; return <button aria-disabled={locked} className={`staff-choice${form.staffId === member.id ? ' selected' : ''}${locked ? ' locked' : ''}`} disabled={locked} key={member.id} onClick={() => chooseStaff(member.id)} title={locked ? 'Ask the School Administrator to grant access to teacher meetings.' : undefined} type="button"><span className={`person-avatar ${member.color}`}>{member.initials}</span><span><strong>{member.name}</strong><small>{member.dept}</small></span><span className="staff-check">{locked ? <LockKeyhole size={17} /> : form.staffId === member.id ? <CheckCircle2 size={20} /> : <ChevronRight size={18} />}</span></button>; })}</div></section>; })}</div></div>}
                   {step === 2 && <div className="booking-step"><span className="eyebrow">PICK A CONVENIENT TIME</span><h3>{t.details}</h3><p>Choose a date and an open session. Booked times are unavailable.</p>
                     <div className="form-grid"><label>{t.student}<select value={form.child} onChange={(event) => setForm((current) => ({ ...current, child: event.target.value }))}><option>Adam</option><option>Maya</option></select></label><label>{t.date}<input type="date" min={localDate()} value={form.date} onChange={(event) => chooseDate(event.target.value)} /></label></div>
                     <label className="field-label">{t.available}<span className="field-hint">{form.staffId ? `${availableSlots.length} sessions open` : 'Choose a staff member first'}</span></label>
