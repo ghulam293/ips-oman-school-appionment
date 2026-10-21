@@ -1,0 +1,16 @@
+{
+  "name": "IPS Oman School Connect",
+  "short_name": "IPS Oman",
+  "description": "Arrange meetings with the IPS Oman school team.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f7f7",
+  "theme_color": "#124958",
+  "icons": [
+    {
+      "src": "/ips-crest.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
+}
