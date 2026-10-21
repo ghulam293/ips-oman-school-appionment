@@ -28,7 +28,7 @@ Run `npm run build`. The static site output is written to `dist/`.
 ## Demo features
 
 - Responsive parent dashboard, appointment list, and mobile bottom navigation
-- IPS Oman school crest, refined navy/teal/gold theme, and English/Arabic toggle
+- IPS Oman school crest, coordinated navy/teal/gold palette with color-coded staff roles, and English/Arabic toggle
 - Numbered appointment directory in the requested order: School Administrator, HR, Principal, Teachers, Admissions, Wellbeing, Finance, and Reception
 - Teacher meetings are locked until the School Administrator demo switch grants access; the grant/revoke status is shown clearly and remembered in that browser settings
 - Book staff appointments: teacher, principal, admissions, counseling, finance
