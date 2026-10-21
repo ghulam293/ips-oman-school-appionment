@@ -2,6 +2,8 @@
 
 A responsive React + Vite prototype for arranging parent meetings with the IPS Oman school team.
 
+**Live demo:** https://ips-oman-school-appionment.vercel.app/
+
 ## Run locally
 
 1. Install Node.js 20+.
