@@ -540,23 +540,28 @@ function App() {
                 {role === 'School Administrator' ? (
                   <div className="permission-control">
                     <span className="permission-icon"><KeyRound size={19} /></span>
-                    <span className="setting-copy"><strong>Teacher meeting access</strong><small>Allow parents to request meetings with teachers in this demo.</small></span>
+                    <span className="setting-copy"><strong>Teacher meeting access</strong><small>Allow parents to request meetings with teachers in this demo.</small><span className={teacherAccess ? 'permission-state granted' : 'permission-state restricted'}>{teacherAccess ? 'Enabled for this browser' : 'Restricted'}</span></span>
                     <button
                       aria-checked={teacherAccess}
-                      aria-label="Grant parent access to teacher meetings"
+                      aria-label={teacherAccess ? 'Revoke teacher meeting access' : 'Grant teacher meeting access'}
                       className={teacherAccess ? 'permission-toggle enabled' : 'permission-toggle'}
-                      onClick={() => setTeacherAccess((current) => !current)}
+                      onClick={() => {
+                        const nextAccess = !teacherAccess;
+                        setTeacherAccess(nextAccess);
+                        toast(nextAccess ? 'Teacher meeting access granted in this browser.' : 'Teacher meeting access revoked in this browser.');
+                      }}
                       role="switch"
+                      title={teacherAccess ? 'Revoke teacher meeting access' : 'Grant teacher meeting access'}
                       type="button"
                     ><span /></button>
                   </div>
                 ) : (
                   <div className="permission-notice">
                     <LockKeyhole size={18} />
-                    <span><strong>Teacher meetings require administrator permission</strong><small>{teacherAccess ? 'The administrator has enabled teacher meetings for this demo.' : 'Teachers stay locked until a School Administrator grants access.'}</small></span>
+                    <span><strong>Teacher meetings require administrator permission</strong><small>{teacherAccess ? 'Enabled in this browser. Teacher meetings are available in the booking list.' : 'Restricted. Switch to the School Administrator demo role to manage access.'}</small></span>
                   </div>
                 )}
-                <div className="profile-hint"><ShieldCheck size={19} /><span><strong>Demo role preview — not secure sign-in</strong><small>Switching roles or granting access only simulates the workflow on this device. Real accounts and permissions must be enforced by the school server.</small></span></div>
+                <div className="profile-hint"><ShieldCheck size={19} /><span><strong>Demo role preview — not secure sign-in</strong><small>Teacher access is remembered in this browser only. Switching roles or granting access only simulates permissions; real accounts and access must be enforced by the school server.</small></span></div>
                 <button className="outline-button reset-button" onClick={() => { setAppointments(SAMPLE_APPOINTMENTS); toast('Sample appointments restored.'); }} type="button"><RotateCcw size={17} /> Reset demo appointments</button>
               </section>
             </div>

@@ -183,6 +183,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .setting-row select { max-width: 155px; padding: 9px 10px; color: #526a70; background: #f7f9f8; border: 1px solid #e9eeec; border-radius: 8px; font-size: 10px; }
 .permission-control { display: flex; align-items: center; gap: 12px; margin-top: 14px; padding: 13px; background: #f7f9fc; border: 1px solid #e4e9f0; border-radius: 11px; }
 .permission-icon { display: grid; place-items: center; flex: 0 0 auto; width: 37px; height: 37px; color: #8b6727; background: #f8f0df; border-radius: 10px; }
+.permission-control .setting-copy { min-width: 0; }
+.permission-state { display: inline-flex; align-items: center; margin-top: 7px; padding: 4px 7px; border-radius: 99px; font-size: 9px; font-weight: 700; }
+.permission-state.granted { color: #34764f; background: #e8f4eb; }
+.permission-state.restricted { color: #896c37; background: #f8f0e0; }
 .permission-toggle { display: flex; align-items: center; flex: 0 0 auto; width: 43px; height: 25px; padding: 3px; background: #aeb8c5; border: 0; border-radius: 99px; transition: background .18s ease; }
 .permission-toggle span { width: 19px; height: 19px; background: #fff; border-radius: 50%; box-shadow: 0 1px 3px #172a4233; transition: transform .18s ease; }
 .permission-toggle.enabled { background: #1c7482; }
